@@ -1,0 +1,33 @@
+name: Development pipeline
+
+on:
+  pull_request:
+    branches: [master]
+    types: [opened]
+
+jobs:
+  test-ocr:
+    name: lint an build
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '14'
+      - name: Installing packages
+        run: npm install
+      - name: lint
+        run: npm run lint
+      - name: build
+        run: npm run build
+      - name: run server
+        run: node ./dist/server &
+      - name: sleep
+        run: sleep 30
+      - uses: fjogeleit/http-request-action@master
+        id: test_callToServer
+        with:
+          url: 'http://localhost:3000/test'
+          method: 'GET'
+      - name: response
+        run: echo ${{ steps.test_callToServer.outputs.response }}

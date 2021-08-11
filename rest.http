@@ -1,0 +1,5 @@
+# GET https://voon-backend.herokuapp.com/test
+# content-type: application/json
+
+GET http://localhost:5000/test
+content-type: application/json
